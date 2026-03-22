@@ -139,13 +139,16 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
         <div className="space-y-3 px-1">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-fade-in-up`}>
-              <div className={`max-w-[85%] md:max-w-[75%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed ${
-                msg.role === "user"
-                  ? "red-gradient text-primary-foreground"
-                  : "bg-card border border-border text-card-foreground"
-              } ${msg.blurred ? "chat-blur" : ""}`}>
-                {msg.text}
-              </div>
+              {msg.role === "user" ? (
+                <div className="max-w-[85%] md:max-w-[75%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed red-gradient text-primary-foreground">
+                  {msg.text}
+                </div>
+              ) : (
+                <div className="max-w-[85%] md:max-w-[75%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed bg-card border border-border text-card-foreground">
+                  <span>{msg.text.slice(0, 120)}</span>
+                  <span className="chat-blur inline">{msg.text.slice(120)}</span>
+                </div>
+              )}
             </div>
           ))}
           {isTyping && (
