@@ -33,6 +33,7 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
   const [isTyping, setIsTyping] = useState(false);
   const [hasTriedDemo, setHasTriedDemo] = useState(false);
   const countryRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -43,6 +44,10 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isTyping]);
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
@@ -75,38 +80,22 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-5">
-      {/* Top row: input bar + country selector */}
-      <div className="flex items-center gap-3">
-        <div className="flex-1 bg-card/60 backdrop-blur-xl border border-border rounded-2xl px-4 md:px-5 py-3 flex items-center gap-3 shadow-lg shadow-primary/5 transition-all focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary/40">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Ask any legal question..."
-            className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground text-sm md:text-base font-body outline-none min-w-0"
-          />
-          <button
-            onClick={handleSend}
-            disabled={!input.trim() || isTyping}
-            className="shrink-0 red-gradient text-primary-foreground p-2 md:p-2.5 rounded-xl disabled:opacity-30 hover:opacity-90 transition-opacity"
-          >
-            <Send className="w-4 h-4" />
-          </button>
-        </div>
-
-        <div ref={countryRef} className="relative shrink-0">
+    <div className="w-full max-w-2xl mx-auto space-y-4">
+      {/* Country selector on top */}
+      <div className="flex items-center justify-center gap-2">
+        <Globe className="w-3.5 h-3.5 text-muted-foreground" />
+        <span className="text-xs text-muted-foreground font-body">Jurisdiction:</span>
+        <div ref={countryRef} className="relative">
           <button
             onClick={() => setCountryOpen(!countryOpen)}
-            className="flex items-center gap-1.5 px-3 py-3 rounded-2xl bg-card/60 backdrop-blur-xl border border-border hover:border-primary/30 text-secondary-foreground text-sm transition-colors font-body"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-card/60 backdrop-blur-xl border border-border hover:border-primary/30 text-secondary-foreground text-sm transition-colors font-body"
           >
-            <span className="text-lg">{selectedCountry.flag}</span>
-            <span className="hidden sm:inline text-xs text-muted-foreground">{selectedCountry.code}</span>
+            <span className="text-base">{selectedCountry.flag}</span>
+            <span className="text-xs text-muted-foreground">{selectedCountry.name}</span>
             <ChevronDown className="w-3 h-3 text-muted-foreground" />
           </button>
           {countryOpen && (
-            <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-2xl z-50 py-1 max-h-60 overflow-y-auto">
+            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-2xl z-50 py-1 max-h-60 overflow-y-auto">
               {COUNTRIES.map((country) => (
                 <button
                   key={country.code}
@@ -122,17 +111,7 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
         </div>
       </div>
 
-      {/* Jurisdiction hint */}
-      {messages.length === 0 && (
-        <div className="flex items-center justify-center gap-2 opacity-50">
-          <Globe className="w-3.5 h-3.5 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground font-body">
-            Jurisdiction: {selectedCountry.name}
-          </span>
-        </div>
-      )}
-
-      {/* Chat messages */}
+      {/* Messages */}
       {messages.length > 0 && (
         <div className="space-y-3 px-1">
           {messages.map((msg, i) => (
@@ -160,6 +139,7 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
               </div>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </div>
       )}
 
@@ -182,6 +162,25 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
           </div>
         </div>
       )}
+
+      {/* Input bar — always at the bottom */}
+      <div className="bg-card/60 backdrop-blur-xl border border-border rounded-2xl px-4 md:px-5 py-3 flex items-center gap-3 shadow-lg shadow-primary/5 transition-all focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary/40">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+          placeholder="Ask any legal question..."
+          className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground text-sm md:text-base font-body outline-none min-w-0"
+        />
+        <button
+          onClick={handleSend}
+          disabled={!input.trim() || isTyping}
+          className="shrink-0 red-gradient text-primary-foreground p-2 md:p-2.5 rounded-xl disabled:opacity-30 hover:opacity-90 transition-opacity"
+        >
+          <Send className="w-4 h-4" />
+        </button>
+      </div>
     </div>
   );
 };
