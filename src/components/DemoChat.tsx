@@ -136,7 +136,7 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
               </div>
             </div>
           )}
-          <div ref={messagesEndRef} />
+          
         </div>
       )}
 
