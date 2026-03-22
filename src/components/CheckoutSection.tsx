@@ -49,8 +49,7 @@ const CheckoutSection = () => {
 
   return (
     <section id="checkout" className="py-16 md:py-24 px-4 sm:px-6">
-      <div className="max-w-2xl mx-auto">
-      <div className="max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto">
         <div className="text-center mb-10 md:mb-16 space-y-3 md:space-y-4">
           <h2 className="text-3xl sm:text-4xl md:text-6xl font-display text-foreground tracking-wide">
             YOUR AI LEGAL <span className="red-text">ADVANTAGE</span>
