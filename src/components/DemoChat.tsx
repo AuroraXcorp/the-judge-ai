@@ -60,11 +60,10 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
 
     setTimeout(() => {
       const newCount = responseCount + 1;
-      const shouldBlur = newCount > 1;
       const aiMsg: Message = {
         role: "ai",
         text: AI_RESPONSES[responseCount % AI_RESPONSES.length],
-        blurred: shouldBlur,
+        blurred: true,
       };
       setMessages((prev) => [...prev, aiMsg]);
       setResponseCount(newCount);
