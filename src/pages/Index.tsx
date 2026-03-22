@@ -32,11 +32,6 @@ const Index = () => {
       {/* Hero */}
       <section className="relative z-10 pt-12 md:pt-20 pb-8 px-6 text-center">
         <div className="max-w-3xl mx-auto space-y-6 animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs font-body border border-border">
-            <span className="w-2 h-2 rounded-full red-gradient animate-pulse" />
-            AI-Powered Legal Intelligence
-          </div>
-
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-display text-foreground leading-none tracking-wide">
             YOUR UNRESTRICTED
             <br />
@@ -47,14 +42,6 @@ const Index = () => {
             Simulate debates, generate documents, and get instant legal analysis — 
             built for lawyers who demand more from AI.
           </p>
-
-          <button
-            onClick={() => document.getElementById("demo")?.scrollIntoView({ behavior: "smooth" })}
-            className="inline-flex items-center gap-2 text-primary text-sm font-body hover:opacity-80 transition-opacity mt-4"
-          >
-            Try the demo below
-            <ArrowDown className="w-4 h-4 animate-bounce" />
-          </button>
         </div>
       </section>
 
