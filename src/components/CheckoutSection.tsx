@@ -1,4 +1,5 @@
 import { Check, Zap, FileText, MessageSquare, Shield } from "lucide-react";
+import { useState } from "react";
 
 const FEATURES = [
   { icon: Zap, text: "Unrestricted AI — no content filters for legal work" },
@@ -9,33 +10,46 @@ const FEATURES = [
 
 const PLANS = [
   {
-    name: "MONTHLY",
-    price: "$49",
-    period: "/mo",
+    id: "weekly",
+    name: "1-Week Trial",
+    price: "$4.99",
+    originalPrice: null,
+    discount: null,
+    dailyPrice: "$0.71",
+    tagline: "☕ Less than a coffee a day",
     popular: false,
-    features: ["Unlimited AI consultations", "Document generation", "Debate simulation", "10 jurisdictions"],
+    features: null,
   },
   {
-    name: "ANNUAL",
-    price: "$29",
-    period: "/mo",
+    id: "monthly",
+    name: "Monthly Plan",
+    price: "$9.99",
+    originalPrice: "$39.99",
+    discount: "75% OFF",
+    dailyPrice: "$0.33",
+    tagline: "🥪 The price of a sandwich",
     popular: true,
-    badge: "Save 40%",
-    features: ["Everything in Monthly", "All 190+ jurisdictions", "Priority responses", "Early access to new features"],
+    features: ["Up to 3 profiles", "AI Lawyer 24/7", "Document Generator", "Debate Simulation"],
   },
   {
-    name: "FIRM",
-    price: "$99",
-    period: "/mo",
+    id: "quarterly",
+    name: "Quarterly Plan",
+    price: "$19.99",
+    originalPrice: "$89.99",
+    discount: "78% OFF",
+    dailyPrice: "$0.22",
+    tagline: "🚌 Less than a bus fare",
     popular: false,
-    features: ["Up to 10 seats", "Team collaboration", "Custom templates", "Dedicated support"],
+    features: null,
   },
 ];
 
 const CheckoutSection = () => {
+  const [selected, setSelected] = useState("monthly");
+
   return (
     <section id="checkout" className="py-24 px-6">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-2xl mx-auto">
         <div className="text-center mb-16 space-y-4">
           <h2 className="text-4xl md:text-6xl font-display text-foreground tracking-wide">
             YOUR AI LEGAL <span className="red-text">ADVANTAGE</span>
@@ -45,7 +59,7 @@ const CheckoutSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           {FEATURES.map((feat, i) => (
             <div key={i} className="glass-card rounded-xl p-4 text-center space-y-2">
               <feat.icon className="w-6 h-6 text-primary mx-auto" />
@@ -54,42 +68,84 @@ const CheckoutSection = () => {
           ))}
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="space-y-4">
           {PLANS.map((plan) => (
             <div
-              key={plan.name}
-              className={`glass-card rounded-2xl p-6 flex flex-col relative ${plan.popular ? "ring-2 ring-primary glow-red" : ""}`}
+              key={plan.id}
+              onClick={() => setSelected(plan.id)}
+              className={`relative glass-card rounded-2xl cursor-pointer transition-all ${
+                plan.popular ? "ring-2 ring-primary glow-red" : ""
+              } ${selected === plan.id ? "ring-2 ring-primary" : ""}`}
             >
-              {plan.badge && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 red-gradient text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full font-body">
-                  {plan.badge}
-                </span>
-              )}
-              <div className="mb-6">
-                <h3 className="text-lg font-display text-foreground tracking-wider">{plan.name}</h3>
-                <div className="mt-2 flex items-baseline gap-1">
-                  <span className="text-4xl font-bold text-foreground font-body">{plan.price}</span>
-                  <span className="text-muted-foreground text-sm font-body">{plan.period}</span>
+              {plan.popular && (
+                <div className="red-gradient text-primary-foreground text-xs font-bold font-display tracking-widest text-center py-1.5 rounded-t-2xl">
+                  MOST POPULAR
                 </div>
+              )}
+
+              <div className="p-5">
+                {/* Top row */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      selected === plan.id ? "border-primary" : "border-muted-foreground"
+                    }`}>
+                      {selected === plan.id && (
+                        <div className="w-2.5 h-2.5 rounded-full bg-primary" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-bold text-foreground font-body">{plan.name}</span>
+                        {plan.discount && (
+                          <span className="text-xs font-semibold font-body bg-secondary text-secondary-foreground px-2 py-0.5 rounded">
+                            {plan.discount}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        {plan.originalPrice && (
+                          <span className="text-sm text-muted-foreground font-body line-through">{plan.originalPrice}</span>
+                        )}
+                        <span className="text-sm text-muted-foreground font-body">{plan.price}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-3xl font-bold text-foreground font-body">{plan.dailyPrice}</span>
+                    <span className="text-sm text-muted-foreground font-body ml-1">/ day</span>
+                  </div>
+                </div>
+
+                {/* Divider + tagline */}
+                <div className="border-t border-border mt-4 pt-3">
+                  <p className="text-center text-sm text-muted-foreground font-body">{plan.tagline}</p>
+                </div>
+
+                {/* Features grid (monthly only) */}
+                {plan.features && (
+                  <div className="border-t border-border mt-3 pt-3">
+                    <div className="grid grid-cols-2 gap-2">
+                      {plan.features.map((feat) => (
+                        <div key={feat} className="flex items-center gap-2 text-sm text-secondary-foreground font-body">
+                          <Check className="w-4 h-4 text-primary shrink-0" />
+                          {feat}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-              <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((feat) => (
-                  <li key={feat} className="flex items-start gap-2 text-sm text-secondary-foreground font-body">
-                    <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                    {feat}
-                  </li>
-                ))}
-              </ul>
-              <button className={`w-full py-3 rounded-xl text-sm font-semibold font-body transition-all ${
-                plan.popular ? "red-gradient text-primary-foreground hover:opacity-90" : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-              }`}>
-                Get Started
-              </button>
             </div>
           ))}
         </div>
 
-        <div className="mt-12 text-center text-xs text-muted-foreground font-body flex items-center justify-center gap-4 flex-wrap">
+        {/* CTA */}
+        <button className="w-full mt-8 red-gradient text-primary-foreground py-4 rounded-2xl text-lg font-semibold font-body hover:opacity-90 transition-opacity">
+          Get Started Now
+        </button>
+
+        <div className="mt-6 text-center text-xs text-muted-foreground font-body flex items-center justify-center gap-4 flex-wrap">
           <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> 256-bit encryption</span>
           <span>•</span><span>Cancel anytime</span><span>•</span><span>30-day money-back guarantee</span>
         </div>
