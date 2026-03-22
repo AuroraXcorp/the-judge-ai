@@ -14,17 +14,16 @@ const Index = () => {
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Ambient glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute top-40 right-0 w-[400px] h-[400px] rounded-full bg-primary/3 blur-[100px] pointer-events-none" />
 
       {/* Navbar */}
       <nav className="relative z-10 flex items-center justify-between px-6 md:px-12 py-5">
         <div className="flex items-center gap-2">
           <Scale className="w-6 h-6 text-primary" />
-          <span className="text-xl font-display font-bold text-foreground">The Judge AI</span>
+          <span className="text-xl font-display text-foreground">THE JUDGE AI</span>
         </div>
         <button
           onClick={scrollToCheckout}
-          className="gold-gradient text-primary-foreground px-5 py-2 rounded-lg text-sm font-semibold font-body hover:opacity-90 transition-opacity"
+          className="red-gradient text-primary-foreground px-5 py-2 rounded-lg text-sm font-semibold font-body hover:opacity-90 transition-opacity"
         >
           Get Access
         </button>
@@ -34,14 +33,14 @@ const Index = () => {
       <section className="relative z-10 pt-12 md:pt-20 pb-8 px-6 text-center">
         <div className="max-w-3xl mx-auto space-y-6 animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs font-body border border-border">
-            <span className="w-2 h-2 rounded-full gold-gradient animate-pulse" />
+            <span className="w-2 h-2 rounded-full red-gradient animate-pulse" />
             AI-Powered Legal Intelligence
           </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-tight">
-            Your Unrestricted
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-display text-foreground leading-none tracking-wide">
+            YOUR UNRESTRICTED
             <br />
-            <span className="gold-text">Legal AI</span> Partner
+            <span className="red-text">LEGAL AI</span> PARTNER
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto font-body leading-relaxed">
