@@ -1,16 +1,87 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useRef } from "react";
+import { Scale, ArrowDown } from "lucide-react";
+import DemoChat from "@/components/DemoChat";
+import CheckoutSection from "@/components/CheckoutSection";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const checkoutRef = useRef<HTMLDivElement>(null);
+
+  const scrollToCheckout = () => {
+    checkoutRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
+      <div className="absolute top-40 right-0 w-[400px] h-[400px] rounded-full bg-primary/3 blur-[100px] pointer-events-none" />
+
+      {/* Navbar */}
+      <nav className="relative z-10 flex items-center justify-between px-6 md:px-12 py-5">
+        <div className="flex items-center gap-2">
+          <Scale className="w-6 h-6 text-primary" />
+          <span className="text-xl font-display font-bold text-foreground">The Judge AI</span>
+        </div>
+        <button
+          onClick={scrollToCheckout}
+          className="gold-gradient text-primary-foreground px-5 py-2 rounded-lg text-sm font-semibold font-body hover:opacity-90 transition-opacity"
+        >
+          Get Access
+        </button>
+      </nav>
+
+      {/* Hero */}
+      <section className="relative z-10 pt-12 md:pt-20 pb-8 px-6 text-center">
+        <div className="max-w-3xl mx-auto space-y-6 animate-fade-in-up">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs font-body border border-border">
+            <span className="w-2 h-2 rounded-full gold-gradient animate-pulse" />
+            AI-Powered Legal Intelligence
+          </div>
+
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-tight">
+            Your Unrestricted
+            <br />
+            <span className="gold-text">Legal AI</span> Partner
+          </h1>
+
+          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto font-body leading-relaxed">
+            Simulate debates, generate documents, and get instant legal analysis — 
+            built for lawyers who demand more from AI.
+          </p>
+
+          <button
+            onClick={() => document.getElementById("demo")?.scrollIntoView({ behavior: "smooth" })}
+            className="inline-flex items-center gap-2 text-primary text-sm font-body hover:opacity-80 transition-opacity mt-4"
+          >
+            Try the demo below
+            <ArrowDown className="w-4 h-4 animate-bounce" />
+          </button>
+        </div>
+      </section>
+
+      {/* Demo */}
+      <section id="demo" className="relative z-10 py-12 px-6">
+        <div className="max-w-2xl mx-auto">
+          <p className="text-center text-sm text-muted-foreground font-body mb-6">
+            Select your jurisdiction and ask any legal question
+          </p>
+          <DemoChat onUnlock={scrollToCheckout} />
+        </div>
+      </section>
+
+      {/* Checkout */}
+      <div ref={checkoutRef}>
+        <CheckoutSection />
+      </div>
+
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-border py-8 px-6 text-center">
+        <p className="text-xs text-muted-foreground font-body">
+          © 2026 The Judge AI. All rights reserved. This is an AI tool and does not constitute legal advice.
+        </p>
+      </footer>
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
