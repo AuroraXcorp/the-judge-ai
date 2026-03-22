@@ -141,7 +141,15 @@ const CheckoutSection = () => {
           Get Started Now
         </button>
 
-        <div className="mt-4 md:mt-6 text-center text-[10px] md:text-xs text-muted-foreground font-body flex items-center justify-center gap-2 md:gap-4 flex-wrap">
+        <p className="mt-3 text-center text-[10px] md:text-[11px] text-muted-foreground/70 font-body leading-relaxed max-w-md mx-auto">
+          By continuing, you agree that if you do not cancel at least 24 hours before the end of the introductory offer, you will be charged the full price of{" "}
+          <span className="text-foreground font-medium">
+            {selected === "quarterly" ? "$89.99" : "$39.99"}
+          </span>{" "}
+          {selected === "quarterly" ? "per quarter" : "per month"} until you cancel in Settings.
+        </p>
+
+        <div className="mt-4 md:mt-5 text-center text-[10px] md:text-xs text-muted-foreground font-body flex items-center justify-center gap-2 md:gap-4 flex-wrap">
           <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> 256-bit encryption</span>
           <span>•</span><span>Cancel anytime</span><span>•</span><span>30-day money-back guarantee</span>
         </div>
