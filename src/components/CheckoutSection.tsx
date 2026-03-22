@@ -137,9 +137,14 @@ const CheckoutSection = () => {
           ))}
         </div>
 
-        <button className="w-full mt-6 md:mt-8 red-gradient text-primary-foreground py-3.5 md:py-4 rounded-2xl text-base md:text-lg font-semibold font-body hover:opacity-90 transition-opacity">
+        <a
+          href={selected === "weekly" ? "https://buy.stripe.com/7sY5kDcHy1AH4Dr1bI4gg05" : selected === "quarterly" ? "https://buy.stripe.com/3cIcN5ePG4MT6Lz6w24gg06" : "https://buy.stripe.com/bJe9ATazq2ELee11bI4gg07"}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block w-full mt-6 md:mt-8 red-gradient text-primary-foreground py-3.5 md:py-4 rounded-2xl text-base md:text-lg font-semibold font-body hover:opacity-90 transition-opacity text-center"
+        >
           Get Started Now
-        </button>
+        </a>
 
         <p className="mt-3 text-center text-[10px] md:text-[11px] text-muted-foreground/70 font-body leading-relaxed max-w-md mx-auto">
           By continuing, you agree that your subscription will be auto-renewed at the full price of{" "}
