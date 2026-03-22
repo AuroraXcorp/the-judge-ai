@@ -144,9 +144,9 @@ const CheckoutSection = () => {
         <p className="mt-3 text-center text-[10px] md:text-[11px] text-muted-foreground/70 font-body leading-relaxed max-w-md mx-auto">
           By continuing, you agree that if you do not cancel at least 24 hours before the end of the introductory offer, you will be charged the full price of{" "}
           <span className="text-foreground font-medium">
-            {selected === "quarterly" ? "$89.99" : "$39.99"}
+            {selected === "weekly" ? "$4.99" : selected === "quarterly" ? "$89.99" : "$39.99"}
           </span>{" "}
-          {selected === "quarterly" ? "per quarter" : "per month"} until you cancel in Settings.
+          per month until you cancel in Settings.
         </p>
 
         <div className="mt-4 md:mt-5 text-center text-[10px] md:text-xs text-muted-foreground font-body flex items-center justify-center gap-2 md:gap-4 flex-wrap">
