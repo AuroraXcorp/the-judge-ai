@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Scale, ArrowDown } from "lucide-react";
+import { Scale } from "lucide-react";
 import DemoChat from "@/components/DemoChat";
 import CheckoutSection from "@/components/CheckoutSection";
 
