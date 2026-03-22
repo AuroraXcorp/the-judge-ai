@@ -45,9 +45,6 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isTyping]);
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
