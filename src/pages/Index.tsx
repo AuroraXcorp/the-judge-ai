@@ -7,7 +7,11 @@ const Index = () => {
   const checkoutRef = useRef<HTMLDivElement>(null);
 
   const scrollToCheckout = () => {
-    checkoutRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = document.getElementById("plans-anchor");
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.scrollY - 20;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
   };
 
   return (

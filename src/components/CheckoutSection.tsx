@@ -68,7 +68,7 @@ const CheckoutSection = () => {
           ))}
         </div>
 
-        <div className="space-y-3 md:space-y-4">
+        <div id="plans-anchor" className="space-y-3 md:space-y-4">
           {PLANS.map((plan) => (
             <div
               key={plan.id}
