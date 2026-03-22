@@ -27,23 +27,36 @@ interface DemoChatProps {
 
 const VISIBLE_CHARS = 200;
 
-const AiMessage = ({ text }: { text: string }) => {
+const AiMessage = ({ text, onUnlock }: { text: string; onUnlock: () => void }) => {
   const [expanded, setExpanded] = useState(false);
   const isLong = text.length > VISIBLE_CHARS;
-  const visibleText = isLong && !expanded ? text.slice(0, VISIBLE_CHARS) : text;
+  const visibleText = isLong && !expanded ? text.slice(0, VISIBLE_CHARS) : text.slice(0, VISIBLE_CHARS);
 
   return (
     <div className="max-w-[90%] md:max-w-[75%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed bg-card border border-border text-card-foreground">
       <span>{visibleText}</span>
-      {isLong && !expanded && (
+      {isLong && (
         <>
-          <span className="chat-blur inline">{text.slice(VISIBLE_CHARS, VISIBLE_CHARS + 80)}...</span>
-          <button
-            onClick={() => setExpanded(true)}
-            className="flex items-center gap-1 mt-2 text-xs text-primary hover:text-primary/80 transition-colors font-body"
-          >
-            Read more <ChevronRight className="w-3 h-3" />
-          </button>
+          {expanded ? (
+            <span className="chat-blur inline">{text.slice(VISIBLE_CHARS)}</span>
+          ) : (
+            <span className="chat-blur inline">{text.slice(VISIBLE_CHARS, VISIBLE_CHARS + 80)}...</span>
+          )}
+          {!expanded ? (
+            <button
+              onClick={() => setExpanded(true)}
+              className="flex items-center gap-1 mt-2 text-xs text-primary hover:text-primary/80 transition-colors font-body"
+            >
+              Read more <ChevronRight className="w-3 h-3" />
+            </button>
+          ) : (
+            <button
+              onClick={onUnlock}
+              className="flex items-center gap-1 mt-2 text-xs text-primary hover:text-primary/80 transition-colors font-body"
+            >
+              <Lock className="w-3 h-3" /> Unlock to read
+            </button>
+          )}
         </>
       )}
     </div>
@@ -141,7 +154,7 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
                   {msg.text}
                 </div>
               ) : (
-                <AiMessage text={msg.text} />
+                <AiMessage text={msg.text} onUnlock={onUnlock} />
               )}
             </div>
           ))}
