@@ -38,7 +38,7 @@ const PLANS = [
     originalPrice: "$89.99",
     discount: "78% OFF",
     dailyPrice: "$0.22",
-    tagline: "🚌 Less than a bus fare",
+    tagline: "📋 Less than a single legal consultation",
     popular: false,
     features: null,
   },
