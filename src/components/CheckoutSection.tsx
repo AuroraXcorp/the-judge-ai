@@ -27,9 +27,9 @@ const PLANS = [
     originalPrice: "$39.99",
     discount: "75% OFF",
     dailyPrice: "$0.33",
-    tagline: "🥪 The price of a sandwich",
+    tagline: "⚖️ Less than a court filing fee",
     popular: true,
-    features: ["Up to 3 profiles", "AI Lawyer 24/7", "Document Generator", "Debate Simulation"],
+    features: ["Accelerate your cases", "AI Lawyer 24/7", "Document Generator", "Debate Simulation"],
   },
   {
     id: "quarterly",
