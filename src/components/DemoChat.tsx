@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { ChevronDown, Send, Lock, Globe } from "lucide-react";
+import { ChevronDown, Send, Lock, Globe, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -25,6 +25,31 @@ interface DemoChatProps {
   onUnlock: () => void;
 }
 
+const VISIBLE_CHARS = 200;
+
+const AiMessage = ({ text }: { text: string }) => {
+  const [expanded, setExpanded] = useState(false);
+  const isLong = text.length > VISIBLE_CHARS;
+  const visibleText = isLong && !expanded ? text.slice(0, VISIBLE_CHARS) : text;
+
+  return (
+    <div className="max-w-[90%] md:max-w-[75%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed bg-card border border-border text-card-foreground">
+      <span>{visibleText}</span>
+      {isLong && !expanded && (
+        <>
+          <span className="chat-blur inline">{text.slice(VISIBLE_CHARS, VISIBLE_CHARS + 80)}...</span>
+          <button
+            onClick={() => setExpanded(true)}
+            className="flex items-center gap-1 mt-2 text-xs text-primary hover:text-primary/80 transition-colors font-body"
+          >
+            Read more <ChevronRight className="w-3 h-3" />
+          </button>
+        </>
+      )}
+    </div>
+  );
+};
+
 const DemoChat = ({ onUnlock }: DemoChatProps) => {
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
   const [countryOpen, setCountryOpen] = useState(false);
@@ -33,7 +58,6 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
   const [isTyping, setIsTyping] = useState(false);
   const [hasTriedDemo, setHasTriedDemo] = useState(false);
   const countryRef = useRef<HTMLDivElement>(null);
-  
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -44,7 +68,6 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
@@ -114,14 +137,11 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-fade-in-up`}>
               {msg.role === "user" ? (
-                <div className="max-w-[85%] md:max-w-[75%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed red-gradient text-primary-foreground">
+                <div className="max-w-[90%] md:max-w-[75%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed red-gradient text-primary-foreground">
                   {msg.text}
                 </div>
               ) : (
-                <div className="max-w-[85%] md:max-w-[75%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed bg-card border border-border text-card-foreground">
-                  <span>{msg.text.slice(0, 140)}</span>
-                  <span className="chat-blur inline">{msg.text.slice(140)}</span>
-                </div>
+                <AiMessage text={msg.text} />
               )}
             </div>
           ))}
@@ -136,32 +156,31 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
               </div>
             </div>
           )}
-          
         </div>
       )}
 
       {/* Unlock CTA */}
       {hasTriedDemo && (
         <div className="relative animate-fade-in-up">
-          <div className="bg-card/80 backdrop-blur-xl border border-border rounded-2xl px-5 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="bg-card/80 backdrop-blur-xl border border-border rounded-2xl px-4 sm:px-5 py-4 sm:py-5 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-xl bg-primary/10">
-                <Lock className="w-5 h-5 text-primary" />
+                <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               </div>
               <div className="text-center sm:text-left">
                 <p className="text-sm font-medium text-foreground font-body">Full analysis locked</p>
                 <p className="text-xs text-muted-foreground font-body">Unlock unlimited AI legal insights</p>
               </div>
             </div>
-            <button onClick={onUnlock} className="red-gradient text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-semibold font-body hover:opacity-90 transition-opacity w-full sm:w-auto">
+            <button onClick={onUnlock} className="red-gradient text-primary-foreground px-5 sm:px-6 py-2.5 rounded-xl text-sm font-semibold font-body hover:opacity-90 transition-opacity w-full sm:w-auto">
               Unlock Now
             </button>
           </div>
         </div>
       )}
 
-      {/* Input bar — always at the bottom */}
-      <div className="bg-card/60 backdrop-blur-xl border border-border rounded-2xl px-4 md:px-5 py-3 flex items-center gap-3 shadow-lg shadow-primary/5 transition-all focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary/40">
+      {/* Input bar */}
+      <div className="bg-card/60 backdrop-blur-xl border border-border rounded-2xl px-3 sm:px-5 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3 shadow-lg shadow-primary/5 transition-all focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary/40">
         <input
           type="text"
           value={input}
