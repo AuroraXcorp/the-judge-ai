@@ -21,9 +21,9 @@ interface Message {
 }
 
 const AI_RESPONSES = [
-  "Based on the applicable statutes and case law, I would argue that the defendant's liability is clearly established under the doctrine of negligence. The key elements — duty of care, breach, causation, and damages — are all present in this scenario.",
-  "Under the relevant jurisdiction's civil code, the statute of limitations for this type of claim is typically 3 years from the date of discovery. However, there are exceptions that could extend this period, particularly in cases involving fraud or concealment.",
-  "I recommend we approach this from a contractual breach standpoint. The evidence suggests a clear violation of the implied covenant of good faith and fair dealing, which strengthens our position significantly.",
+  "Based on the applicable statutes and case law in your jurisdiction, the defendant's liability appears to be clearly established under the doctrine of negligence. The key elements — duty of care, breach, causation, and damages — are all present in this scenario. Furthermore, recent precedents from appellate courts have reinforced the standard of reasonable care applicable here, which significantly strengthens the plaintiff's position. I would recommend focusing on the following strategy: first, establish the timeline of events to demonstrate a clear causal link between the defendant's actions and the resulting harm. Second, gather expert testimony to quantify the economic and non-economic damages sustained. Third, consider filing a motion for summary judgment given the strength of the evidence, as the opposing party may struggle to raise a genuine dispute of material fact. Additionally, under the comparative negligence framework adopted by most modern jurisdictions, even if the plaintiff bears some degree of fault, recovery is still possible provided their share of responsibility does not exceed the statutory threshold.",
+  "Under the relevant jurisdiction's civil code, the statute of limitations for this type of claim is typically 3 years from the date of discovery. However, there are several critical exceptions that could extend or toll this period. In cases involving fraud, concealment, or fiduciary breach, courts have consistently applied the discovery rule more liberally, sometimes extending the effective filing window by several years. I would advise conducting a thorough review of all correspondence and transactional records to pinpoint the earliest date on which the injured party knew or should have known about the claim. Moreover, if the defendant engaged in active concealment of material facts, you may also have grounds to argue for equitable tolling. From a procedural standpoint, it would be prudent to file a protective action before the primary limitations period expires, while simultaneously pursuing alternative dispute resolution channels.",
+  "I recommend approaching this matter from a contractual breach standpoint. The evidence strongly suggests a clear violation of the implied covenant of good faith and fair dealing, which is recognized in virtually all common law jurisdictions. This covenant requires that both parties act honestly and not deprive the other of expected benefits. In analyzing the specific facts, there appear to be multiple instances where the breaching party acted inconsistently with reasonable expectations established at contract formation. To build the strongest case, I would suggest organizing evidence chronologically and categorizing each breach by severity and financial impact. Expert economic analysis will be essential to quantify direct damages and consequential losses, including lost profits. Depending on the jurisdiction, you may also seek punitive damages if the breach was willful or in bad faith.",
 ];
 
 interface DemoChatProps {
@@ -60,11 +60,10 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
 
     setTimeout(() => {
       const newCount = responseCount + 1;
-      const shouldBlur = newCount > 1;
       const aiMsg: Message = {
         role: "ai",
         text: AI_RESPONSES[responseCount % AI_RESPONSES.length],
-        blurred: shouldBlur,
+        blurred: true,
       };
       setMessages((prev) => [...prev, aiMsg]);
       setResponseCount(newCount);
@@ -73,7 +72,7 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
     }, 3000);
   };
 
-  const showUnlock = hasTriedDemo && responseCount > 1;
+  const showUnlock = hasTriedDemo;
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-5">
@@ -140,13 +139,16 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
         <div className="space-y-3 px-1">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-fade-in-up`}>
-              <div className={`max-w-[85%] md:max-w-[75%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed ${
-                msg.role === "user"
-                  ? "red-gradient text-primary-foreground"
-                  : "bg-card border border-border text-card-foreground"
-              } ${msg.blurred ? "chat-blur" : ""}`}>
-                {msg.text}
-              </div>
+              {msg.role === "user" ? (
+                <div className="max-w-[85%] md:max-w-[75%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed red-gradient text-primary-foreground">
+                  {msg.text}
+                </div>
+              ) : (
+                <div className="max-w-[85%] md:max-w-[75%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed bg-card border border-border text-card-foreground">
+                  <span>{msg.text.slice(0, 120)}</span>
+                  <span className="chat-blur inline">{msg.text.slice(120)}</span>
+                </div>
+              )}
             </div>
           ))}
           {isTyping && (
