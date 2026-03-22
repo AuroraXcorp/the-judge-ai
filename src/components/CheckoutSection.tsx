@@ -29,7 +29,7 @@ const PLANS = [
     dailyPrice: "$0.33",
     tagline: "⚖️ Less than a court filing fee",
     popular: true,
-    features: ["Accelerate your cases", "AI Lawyer 24/7", "Document Generator", "Debate Simulation"],
+    features: ["Accelerate your cases", "AI legal advisor", "Document Generator", "Debate Simulation"],
   },
   {
     id: "quarterly",
