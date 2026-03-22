@@ -154,7 +154,7 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
                   {msg.text}
                 </div>
               ) : (
-                <AiMessage text={msg.text} />
+                <AiMessage text={msg.text} onUnlock={onUnlock} />
               )}
             </div>
           ))}
