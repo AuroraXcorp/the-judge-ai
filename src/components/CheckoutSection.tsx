@@ -141,6 +141,15 @@ const CheckoutSection = () => {
           href={selected === "weekly" ? "https://buy.stripe.com/7sY5kDcHy1AH4Dr1bI4gg05" : selected === "quarterly" ? "https://buy.stripe.com/3cIcN5ePG4MT6Lz6w24gg06" : "https://buy.stripe.com/bJe9ATazq2ELee11bI4gg07"}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => {
+            if (typeof window !== 'undefined' && (window as any).fbq) {
+              (window as any).fbq('track', 'InitiateCheckout', {
+                content_name: selected === "weekly" ? "Weekly Plan" : selected === "quarterly" ? "Quarterly Plan" : "Monthly Plan",
+                currency: 'USD',
+                value: selected === "weekly" ? 4.99 : selected === "quarterly" ? 19.99 : 9.99,
+              });
+            }
+          }}
           className="block w-full mt-6 md:mt-8 red-gradient text-primary-foreground py-3.5 md:py-4 rounded-2xl text-base md:text-lg font-semibold font-body hover:opacity-90 transition-opacity text-center"
         >
           Get Started Now
