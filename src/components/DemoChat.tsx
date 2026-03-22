@@ -33,7 +33,7 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
   const [isTyping, setIsTyping] = useState(false);
   const [hasTriedDemo, setHasTriedDemo] = useState(false);
   const countryRef = useRef<HTMLDivElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
