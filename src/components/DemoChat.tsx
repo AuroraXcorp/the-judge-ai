@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { ChevronDown, Send, Scale, Lock } from "lucide-react";
+import { ChevronDown, Send, Scale, Lock, Globe } from "lucide-react";
 
 const COUNTRIES = [
   { code: "US", name: "United States", flag: "🇺🇸" },
@@ -39,10 +39,21 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
   const [hasTriedDemo, setHasTriedDemo] = useState(false);
   const [responseCount, setResponseCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const countryRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (countryRef.current && !countryRef.current.contains(e.target as Node)) {
+        setCountryOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSend = () => {
     if (!input.trim() || isTyping) return;
@@ -67,106 +78,118 @@ const DemoChat = ({ onUnlock }: DemoChatProps) => {
     }, 1500);
   };
 
+  const showUnlock = hasTriedDemo && responseCount > 1;
+
   return (
-    <div className="glass-card rounded-2xl overflow-hidden glow-red max-w-2xl mx-auto">
-      {/* Country Selector */}
-      <div className="flex items-center justify-between border-b border-border px-5 py-3">
-        <div className="flex items-center gap-2">
-          <Scale className="w-4 h-4 text-primary" />
-          <span className="text-sm font-semibold text-foreground font-display tracking-wider">THE JUDGE AI</span>
-          <span className="text-xs text-muted-foreground font-body">• Demo</span>
-        </div>
-        <div className="relative">
+    <div className="w-full max-w-2xl mx-auto space-y-6">
+      {/* Main input area — clean, open style */}
+      <div className="relative">
+        <div className="bg-card/60 backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl px-4 md:px-6 py-3 md:py-4 flex items-center gap-3 shadow-lg shadow-primary/5 transition-all focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary/40">
+          {/* Country selector pill */}
+          <div ref={countryRef} className="relative shrink-0">
+            <button
+              onClick={() => setCountryOpen(!countryOpen)}
+              className="flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs md:text-sm transition-colors font-body"
+            >
+              <span className="text-base">{selectedCountry.flag}</span>
+              <span className="hidden sm:inline">{selectedCountry.name}</span>
+              <ChevronDown className="w-3 h-3 text-muted-foreground" />
+            </button>
+            {countryOpen && (
+              <div className="absolute left-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-2xl z-50 py-1 max-h-60 overflow-y-auto">
+                {COUNTRIES.map((country) => (
+                  <button
+                    key={country.code}
+                    onClick={() => { setSelectedCountry(country); setCountryOpen(false); }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-card-foreground hover:bg-secondary transition-colors font-body"
+                  >
+                    <span>{country.flag}</span>
+                    <span>{country.name}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Input */}
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder="Ask any legal question..."
+            className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground text-sm md:text-base font-body outline-none min-w-0"
+          />
+
+          {/* Send */}
           <button
-            onClick={() => setCountryOpen(!countryOpen)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary text-secondary-foreground text-sm hover:bg-secondary/80 transition-colors font-body"
+            onClick={handleSend}
+            disabled={!input.trim() || isTyping}
+            className="shrink-0 red-gradient text-primary-foreground p-2 md:p-2.5 rounded-xl disabled:opacity-30 hover:opacity-90 transition-opacity"
           >
-            <span>{selectedCountry.flag}</span>
-            <span>{selectedCountry.name}</span>
-            <ChevronDown className="w-3 h-3" />
+            <Send className="w-4 h-4" />
           </button>
-          {countryOpen && (
-            <div className="absolute right-0 top-full mt-1 w-48 bg-card border border-border rounded-lg shadow-xl z-50 py-1 max-h-60 overflow-y-auto">
-              {COUNTRIES.map((country) => (
-                <button
-                  key={country.code}
-                  onClick={() => { setSelectedCountry(country); setCountryOpen(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-card-foreground hover:bg-secondary transition-colors font-body"
-                >
-                  <span>{country.flag}</span>
-                  <span>{country.name}</span>
-                </button>
-              ))}
+        </div>
+
+        {/* Jurisdiction hint */}
+        {messages.length === 0 && (
+          <div className="flex items-center justify-center gap-2 mt-3 opacity-50">
+            <Globe className="w-3.5 h-3.5 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground font-body">
+              Jurisdiction: {selectedCountry.name}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Chat messages — only show after first message */}
+      {messages.length > 0 && (
+        <div className="space-y-3 max-h-[50vh] md:max-h-[400px] overflow-y-auto px-1">
+          {messages.map((msg, i) => (
+            <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-fade-in-up`}>
+              <div className={`max-w-[85%] md:max-w-[75%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed ${
+                msg.role === "user"
+                  ? "red-gradient text-primary-foreground"
+                  : "bg-card border border-border text-card-foreground"
+              } ${msg.blurred ? "chat-blur" : ""}`}>
+                {msg.text}
+              </div>
+            </div>
+          ))}
+          {isTyping && (
+            <div className="flex justify-start animate-fade-in-up">
+              <div className="bg-card border border-border rounded-2xl px-4 py-3">
+                <span className="flex gap-1">
+                  <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "300ms" }} />
+                </span>
+              </div>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </div>
-      </div>
-
-      {/* Chat */}
-      <div className="h-80 overflow-y-auto p-5 space-y-4">
-        {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center space-y-3 opacity-60">
-            <Scale className="w-10 h-10 text-primary animate-float" />
-            <p className="text-muted-foreground text-sm font-body">Ask any legal question to see The Judge AI in action</p>
-            <p className="text-muted-foreground text-xs font-body">Jurisdiction: {selectedCountry.name}</p>
-          </div>
-        )}
-        {messages.map((msg, i) => (
-          <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-fade-in-up`}>
-            <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm font-body leading-relaxed ${
-              msg.role === "user" ? "red-gradient text-primary-foreground" : "bg-secondary text-secondary-foreground"
-            } ${msg.blurred ? "chat-blur" : ""}`}>
-              {msg.text}
-            </div>
-          </div>
-        ))}
-        {isTyping && (
-          <div className="flex justify-start animate-fade-in-up">
-            <div className="bg-secondary rounded-2xl px-4 py-3">
-              <span className="flex gap-1">
-                <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "300ms" }} />
-              </span>
-            </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+      )}
 
       {/* Unlock CTA */}
-      {hasTriedDemo && responseCount > 1 && (
-        <div className="relative">
-          <div className="absolute inset-x-0 -top-20 h-20 bg-gradient-to-t from-card to-transparent z-10 pointer-events-none" />
-          <div className="bg-card/95 backdrop-blur-sm border-t border-border px-5 py-4 flex items-center justify-between z-20 relative">
+      {showUnlock && (
+        <div className="relative animate-fade-in-up">
+          <div className="bg-card/80 backdrop-blur-xl border border-border rounded-2xl px-5 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Lock className="w-5 h-5 text-primary" />
-              <div>
+              <div className="p-2 rounded-xl bg-primary/10">
+                <Lock className="w-5 h-5 text-primary" />
+              </div>
+              <div className="text-center sm:text-left">
                 <p className="text-sm font-medium text-foreground font-body">Full analysis locked</p>
                 <p className="text-xs text-muted-foreground font-body">Unlock unlimited AI legal insights</p>
               </div>
             </div>
-            <button onClick={onUnlock} className="red-gradient text-primary-foreground px-5 py-2 rounded-lg text-sm font-semibold font-body hover:opacity-90 transition-opacity">
+            <button onClick={onUnlock} className="red-gradient text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-semibold font-body hover:opacity-90 transition-opacity w-full sm:w-auto">
               Unlock Now
             </button>
           </div>
         </div>
       )}
-
-      {/* Input */}
-      <div className="border-t border-border px-5 py-3 flex gap-3">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder="Ask a legal question..."
-          className="flex-1 bg-secondary text-secondary-foreground placeholder:text-muted-foreground rounded-xl px-4 py-2.5 text-sm font-body outline-none focus:ring-1 focus:ring-primary transition-all"
-        />
-        <button onClick={handleSend} disabled={!input.trim() || isTyping} className="red-gradient text-primary-foreground p-2.5 rounded-xl disabled:opacity-40 hover:opacity-90 transition-opacity">
-          <Send className="w-4 h-4" />
-        </button>
-      </div>
     </div>
   );
 };
